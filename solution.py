@@ -1,7 +1,7 @@
 import pandas as pd
-from sklearn.preprocessing import StandardScaler
 import matplotlib.pyplot as plt
 import seaborn as sns
+from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import classification_report, confusion_matrix, accuracy_score
@@ -54,6 +54,7 @@ data['stress_level'] = data['stress_level'].map(ordinal_mapping).fillna(0)  # Ha
 
 # Create BMI categories
 data['BMI_category'] = pd.cut(data['BMI'], bins=[0, 18.5, 24.9, 29.9, 50], labels=['Underweight', 'Normal', 'Overweight', 'Obese'])
+
 
 # Combine hypertension and family diabetes history
 data['combined_risk'] = data['hypertension'].fillna(0) + data['family_diabetes_history'].fillna(0)
