@@ -129,4 +129,4 @@ The dataset contains information about individuals with attributes like gender, 
 ---
 
 ## Contact
-For questions or collaborations, please reach out at [your-email@example.com].
+For questions or collaborations, please reach out at [roman@rosh.dev].
