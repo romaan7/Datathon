@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,38 +15,48 @@
             background-color: #e6e7e9 !important;
             font-family: Arial, sans-serif;
         }
+
         .card {
             border-radius: 15px;
             box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.08);
-            
+
         }
+
         .chart-container {
             position: relative;
             height: 250px;
-            
-            
+
+
         }
+
         .icon-right {
             font-size: 30px;
             color: #005EB8;
         }
-        .mt-4 {
-    margin-top: 0.1rem !important;
-}
 
-.title-image {
-    width: 300px; /* Adjust size as needed */
-    height: auto; /* Maintain aspect ratio */
-    display: inline-block; /* Ensure it stays inline with the text */
-}
+        .mt-4 {
+            margin-top: 0.1rem !important;
+        }
+
+        .title-image {
+            width: 300px;
+            /* Adjust size as needed */
+            height: auto;
+            /* Maintain aspect ratio */
+            display: inline-block;
+            /* Ensure it stays inline with the text */
+        }
     </style>
 </head>
+
 <body>
     <div class="container my-4">
         <div class="d-flex align-items-center justify-content-center">
             <img src="diabetes-month.jpg" alt="Diabetes Awareness" class="title-image">
         </div>
-        <p class="text-center text-muted">November is Diabetes Awareness Month, a time to highlight the impact of diabetes and encourage proactive health management. This dashboard explores key insights from the dataset, uncovering trends and factors influencing diabetes to support better awareness and prevention.</p>
+        <p class="text-center text-muted">November is Diabetes Awareness Month, a time to highlight the impact of
+            diabetes and encourage proactive health management. This dashboard explores key insights from the dataset,
+            uncovering trends and factors influencing diabetes to support better awareness and prevention.</p>
 
         <!-- Top Stats Cards -->
         <div class="row g-3">
@@ -65,10 +76,10 @@
             <div class="col-md-3">
                 <div class="card">
                     <div class="card-body d-flex justify-content-between align-items-center">
-                    <div class="left-section">
-                        <p class="mb-2 text-muted">Total Diabetics</p>
-                        <h3 id="total-diabetics" class="mb-0">Loading...</h3>
-                    </div>
+                        <div class="left-section">
+                            <p class="mb-2 text-muted">Total Diabetics</p>
+                            <h3 id="total-diabetics" class="mb-0">Loading...</h3>
+                        </div>
                         <div class="right-section">
                             <i class="bi bi-search-heart-fill icon-right"></i>
                         </div>
@@ -79,12 +90,12 @@
                 <div class="card">
                     <div class="card-body  d-flex justify-content-between align-items-center">
                         <div class="left-section">
-                        <p class="mb-2 text-muted">Avg. BMI</p>
-                        <h3 id="average-bmi" class="mb-0">Loading...</h3>
-                    </div>
-                    <div class="right-section">
-                        <i class="bi-heart-pulse-fill icon-right"></i>
-                    </div>
+                            <p class="mb-2 text-muted">Avg. BMI</p>
+                            <h3 id="average-bmi" class="mb-0">Loading...</h3>
+                        </div>
+                        <div class="right-section">
+                            <i class="bi-heart-pulse-fill icon-right"></i>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -92,12 +103,12 @@
                 <div class="card">
                     <div class="card-body d-flex justify-content-between align-items-center">
                         <div class="left-section">
-                        <p class="mb-2 text-muted">Avg. Sleep Duration</p>
-                        <h3 id="average-sleep" class="mb-0">Loading...</h3>
-                    </div>
-                    <div class="right-section">
-                        <i class="bi bi-moon-stars-fill icon-right"></i>
-                    </div>
+                            <p class="mb-2 text-muted">Avg. Sleep Duration</p>
+                            <h3 id="average-sleep" class="mb-0">Loading...</h3>
+                        </div>
+                        <div class="right-section">
+                            <i class="bi bi-moon-stars-fill icon-right"></i>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -171,42 +182,42 @@
 
 
         <!-- New Visualizations -->
-<div class="row g-3 mt-4">
-        <!-- Family History -->
-        <div class="col-md-4">
-            <div class="card shadow">
-                <div class="card-body">
-                    <h5>Family History and Diabetes</h5>
-                    <div class="chart-container">
-                        <canvas id="familyHistoryChart"></canvas>
+        <div class="row g-3 mt-4">
+            <!-- Family History -->
+            <div class="col-md-4">
+                <div class="card shadow">
+                    <div class="card-body">
+                        <h5>Family History and Diabetes</h5>
+                        <div class="chart-container">
+                            <canvas id="familyHistoryChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Heatmap: Diet Type Split -->
+            <div class="col-md-4">
+                <div class="card shadow">
+                    <div class="card-body">
+                        <h5>Diet Type Split</h5>
+                        <div class="chart-container">
+                            <canvas id="dietTypeHeatmap"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stacked Bar: Alcohol Consumption -->
+            <div class="col-md-4">
+                <div class="card shadow">
+                    <div class="card-body">
+                        <h5>Alcohol Consumption and Diabetes</h5>
+                        <div class="chart-container">
+                            <canvas id="alcoholConsumptionChart"></canvas>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    <!-- Heatmap: Diet Type Split -->
-    <div class="col-md-4">
-        <div class="card shadow">
-            <div class="card-body">
-                <h5>Diet Type Split</h5>
-                <div class="chart-container">
-                    <canvas id="dietTypeHeatmap"></canvas>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Stacked Bar: Alcohol Consumption -->
-    <div class="col-md-4">
-        <div class="card shadow">
-            <div class="card-body">
-                <h5>Alcohol Consumption and Diabetes</h5>
-                <div class="chart-container">
-                    <canvas id="alcoholConsumptionChart"></canvas>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
     </div>
 
     <script>
@@ -227,8 +238,8 @@
                             physical_activity_level: row[10]?.trim() || "Unknown",
                             social_media_usage: row[12]?.trim() || "Unknown",
                             diet_type: row[7]?.trim() || "Unknown",
-                        alcohol_consumption: row[8]?.trim() || "Unknown",
-                        family_history: row[9]?.trim() || "Unknown" 
+                            alcohol_consumption: row[8]?.trim() || "Unknown",
+                            family_history: row[9]?.trim() || "Unknown"
                         };
                     } catch (error) {
                         return null; // Skip malformed rows
@@ -308,33 +319,38 @@
                         labels: activityLevels.map(d => d[0]),
                         datasets: [{
                             label: "Activity Levels",
-                            data: activityLevels.map(d => d[1]),  
+                            data: activityLevels.map(d => d[1]),
                             backgroundColor: ["#003087", "#005EB8", "#0072CE", "#41B6E6", "#00A9CE", "#768692"]
                         }]
                     },
-                    options: {  layout: {
-            padding: 10 // Add padding around the chart for better aesthetics
-        },responsive: true, 
-                    maintainAspectRatio: false, // Allow the chart to fill the container
-                    plugins: { legend: { 
-                    display: true,
-                    position: 'right', // Position the legend to the right of the chart
-                        labels: {
-                                boxWidth: 15, // Adjust the size of the legend color box
-                                padding: 10 // Add spacing between legend items
-                }},
-            datalabels: {
-                color: '#ffffff',
-                font: {
-                    size: 14,
-                    weight: 'bold'
-                },
-                formatter: function(value, context) {
-                    const total = context.chart.data.datasets[0].data.reduce((sum, val) => sum + val, 0);
-                    const percentage = ((value / total) * 100).toFixed(2);
-                    return `${percentage}%`; // Display percentage
-                }
-            }  } }, plugins: [ChartDataLabels] // Activate the Datalabels plugin
+                    options: {
+                        layout: {
+                            padding: 10 // Add padding around the chart for better aesthetics
+                        }, responsive: true,
+                        maintainAspectRatio: false, // Allow the chart to fill the container
+                        plugins: {
+                            legend: {
+                                display: true,
+                                position: 'right', // Position the legend to the right of the chart
+                                labels: {
+                                    boxWidth: 15, // Adjust the size of the legend color box
+                                    padding: 10 // Add spacing between legend items
+                                }
+                            },
+                            datalabels: {
+                                color: '#ffffff',
+                                font: {
+                                    size: 14,
+                                    weight: 'bold'
+                                },
+                                formatter: function (value, context) {
+                                    const total = context.chart.data.datasets[0].data.reduce((sum, val) => sum + val, 0);
+                                    const percentage = ((value / total) * 100).toFixed(2);
+                                    return `${percentage}%`; // Display percentage
+                                }
+                            }
+                        }
+                    }, plugins: [ChartDataLabels] // Activate the Datalabels plugin
                 });
 
                 // Donut Chart: Social Media Usage
@@ -353,127 +369,133 @@
                             backgroundColor: ["#003087", "#005EB8", "#0072CE", "#41B6E6", "#00A9CE", "#768692"]
                         }]
                     },
-                    options: {  layout: {
-            padding: 10 // Add padding around the chart for better aesthetics
-        },responsive: true,maintainAspectRatio: false, // Allow the chart to fill the container
-                         plugins: { legend: { 
-                    display: true,
-                    position: 'right', // Position the legend to the right of the chart
-                        labels: {
-                                boxWidth: 15, // Adjust the size of the legend color box
-                                padding: 10 // Add spacing between legend items
-                }},
-            datalabels: {
-                color: '#ffffff',
-                font: {
-                    size: 14,
-                    weight: 'bold'
-                },
-                formatter: function(value, context) {
-                    const total = context.chart.data.datasets[0].data.reduce((sum, val) => sum + val, 0);
-                    const percentage = ((value / total) * 100).toFixed(2);
-                    return `${percentage}%`; // Display percentage
-                }
-            } } }, plugins: [ChartDataLabels] // Activate the Datalabels plugin
+                    options: {
+                        layout: {
+                            padding: 10 // Add padding around the chart for better aesthetics
+                        }, responsive: true, maintainAspectRatio: false, // Allow the chart to fill the container
+                        plugins: {
+                            legend: {
+                                display: true,
+                                position: 'right', // Position the legend to the right of the chart
+                                labels: {
+                                    boxWidth: 15, // Adjust the size of the legend color box
+                                    padding: 10 // Add spacing between legend items
+                                }
+                            },
+                            datalabels: {
+                                color: '#ffffff',
+                                font: {
+                                    size: 14,
+                                    weight: 'bold'
+                                },
+                                formatter: function (value, context) {
+                                    const total = context.chart.data.datasets[0].data.reduce((sum, val) => sum + val, 0);
+                                    const percentage = ((value / total) * 100).toFixed(2);
+                                    return `${percentage}%`; // Display percentage
+                                }
+                            }
+                        }
+                    }, plugins: [ChartDataLabels] // Activate the Datalabels plugin
                 });
 
                 // Diet Type Heatmap
-            const dietHeatmapData = d3.rollups(
-                data,
-                v => v.length,
-                d => `${d.diet_type}_${d.diabetes}`
-            );
-            const heatmapLabels = Array.from(new Set(data.map(d => d.diet_type)));
-            const heatmapDataset = {
-                labels: heatmapLabels,
-                datasets: [
-                    {
-                        label: "Non-Diabetic",
-                        data: heatmapLabels.map(label => dietHeatmapData.find(d => d[0] === `${label}_0`)?.[1] || 0),
-                        backgroundColor: "#005EB8",
-                        
-                    },
-                    {
-                        label: "Diabetic",
-                        data: heatmapLabels.map(label => dietHeatmapData.find(d => d[0] === `${label}_1`)?.[1] || 0),
-                        backgroundColor: "#41B6E6"
-                    }
-                ]
-            };
-            new Chart(document.getElementById("dietTypeHeatmap").getContext("2d"), {
-                type: "bar",
-                data: heatmapDataset,
-                options: { responsive: true, plugins: { legend: { display: true } } }
-            });
+                const dietHeatmapData = d3.rollups(
+                    data,
+                    v => v.length,
+                    d => `${d.diet_type}_${d.diabetes}`
+                );
+                const heatmapLabels = Array.from(new Set(data.map(d => d.diet_type)));
+                const heatmapDataset = {
+                    labels: heatmapLabels,
+                    datasets: [
+                        {
+                            label: "Non-Diabetic",
+                            data: heatmapLabels.map(label => dietHeatmapData.find(d => d[0] === `${label}_0`)?.[1] || 0),
+                            backgroundColor: "#005EB8",
 
-            // Alcohol Consumption Stacked Bar
-            const alcoholData = d3.rollups(
-                data,
-                v => v.length,
-                d => `${d.alcohol_consumption}_${d.diabetes}`
-            );
-            const alcoholLabels = Array.from(new Set(data.map(d => d.alcohol_consumption)));
-            const alcoholDataset = {
-                labels: alcoholLabels,
-                datasets: [
-                    {
-                        label: "Non-Diabetic",
-                        data: alcoholLabels.map(label => alcoholData.find(d => d[0] === `${label}_0`)?.[1] || 0),
-                        backgroundColor: "#005EB8",
-                
-                        borderRadius: 10, // Add rounded corners
-                        borderSkipped: false, // Ensures rounded corners apply to all edges
-                    },
-                    {
-                        label: "Diabetic",
-                        data: alcoholLabels.map(label => alcoholData.find(d => d[0] === `${label}_1`)?.[1] || 0),
-                        backgroundColor: "#41B6E6",
-                borderRadius: 10, // Add rounded corners
-                borderSkipped: false, // Ensures rounded corners apply to all edges
-                    }
-                ]
-            };
-            new Chart(document.getElementById("alcoholConsumptionChart").getContext("2d"), {
-                type: "bar",
-                data: alcoholDataset,
-                options: { responsive: true, plugins: { legend: { display: true } } }
-            });
+                        },
+                        {
+                            label: "Diabetic",
+                            data: heatmapLabels.map(label => dietHeatmapData.find(d => d[0] === `${label}_1`)?.[1] || 0),
+                            backgroundColor: "#41B6E6"
+                        }
+                    ]
+                };
+                new Chart(document.getElementById("dietTypeHeatmap").getContext("2d"), {
+                    type: "bar",
+                    data: heatmapDataset,
+                    options: { responsive: true, plugins: { legend: { display: true } } }
+                });
 
-            // Family History Chart
-            const familyData = d3.rollups(
-                data,
-                v => v.length,
-                d => `${d.family_history}_${d.diabetes}`
-            );
-            const familyLabels = Array.from(new Set(data.map(d => d.family_history)));
-            const familyDataset = {
-                labels: familyLabels,
-                datasets: [
-                    {
-                        label: "Non-Diabetic",
-                        data: familyLabels.map(label => familyData.find(d => d[0] === `${label}_0`)?.[1] || 0),
-                        backgroundColor: "#005EB8",
-                borderRadius: 10, // Add rounded corners
-                borderSkipped: false, // Ensures rounded corners apply to all edges
-                    },
-                    {
-                        label: "Diabetic",
-                        data: familyLabels.map(label => familyData.find(d => d[0] === `${label}_1`)?.[1] || 0),
-                        backgroundColor: "#41B6E6",
-                borderRadius: 10, // Add rounded corners
-                borderSkipped: false, // Ensures rounded corners apply to all edges
-                    }
-                ]
-            };
-            new Chart(document.getElementById("familyHistoryChart").getContext("2d"), {
-                type: "bar",
-                data: familyDataset,
-                options: { responsive: true, plugins: { legend: { display: true } } }
-            });
+                // Alcohol Consumption Stacked Bar
+                const alcoholData = d3.rollups(
+                    data,
+                    v => v.length,
+                    d => `${d.alcohol_consumption}_${d.diabetes}`
+                );
+                const alcoholLabels = Array.from(new Set(data.map(d => d.alcohol_consumption)));
+                const alcoholDataset = {
+                    labels: alcoholLabels,
+                    datasets: [
+                        {
+                            label: "Non-Diabetic",
+                            data: alcoholLabels.map(label => alcoholData.find(d => d[0] === `${label}_0`)?.[1] || 0),
+                            backgroundColor: "#005EB8",
+
+                            borderRadius: 10, // Add rounded corners
+                            borderSkipped: false, // Ensures rounded corners apply to all edges
+                        },
+                        {
+                            label: "Diabetic",
+                            data: alcoholLabels.map(label => alcoholData.find(d => d[0] === `${label}_1`)?.[1] || 0),
+                            backgroundColor: "#41B6E6",
+                            borderRadius: 10, // Add rounded corners
+                            borderSkipped: false, // Ensures rounded corners apply to all edges
+                        }
+                    ]
+                };
+                new Chart(document.getElementById("alcoholConsumptionChart").getContext("2d"), {
+                    type: "bar",
+                    data: alcoholDataset,
+                    options: { responsive: true, plugins: { legend: { display: true } } }
+                });
+
+                // Family History Chart
+                const familyData = d3.rollups(
+                    data,
+                    v => v.length,
+                    d => `${d.family_history}_${d.diabetes}`
+                );
+                const familyLabels = Array.from(new Set(data.map(d => d.family_history)));
+                const familyDataset = {
+                    labels: familyLabels,
+                    datasets: [
+                        {
+                            label: "Non-Diabetic",
+                            data: familyLabels.map(label => familyData.find(d => d[0] === `${label}_0`)?.[1] || 0),
+                            backgroundColor: "#005EB8",
+                            borderRadius: 10, // Add rounded corners
+                            borderSkipped: false, // Ensures rounded corners apply to all edges
+                        },
+                        {
+                            label: "Diabetic",
+                            data: familyLabels.map(label => familyData.find(d => d[0] === `${label}_1`)?.[1] || 0),
+                            backgroundColor: "#41B6E6",
+                            borderRadius: 10, // Add rounded corners
+                            borderSkipped: false, // Ensures rounded corners apply to all edges
+                        }
+                    ]
+                };
+                new Chart(document.getElementById("familyHistoryChart").getContext("2d"), {
+                    type: "bar",
+                    data: familyDataset,
+                    options: { responsive: true, plugins: { legend: { display: true } } }
+                });
 
 
             })
             .catch(error => console.error("Error fetching or parsing the CSV file:", error));
     </script>
 </body>
+
 </html>
