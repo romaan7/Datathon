@@ -4,6 +4,9 @@
 This project focuses on exploratory data analysis (EDA), dimensional modeling, and machine learning to derive insights and predict diabetes status using a comprehensive dataset. The project includes data cleaning, feature engineering, model development, and analysis.
 
 ---
+The dashboard is live at https://datathon.rosh.dev/
+
+---
 
 ## 1. Exploratory Data Analysis (EDA)
 
