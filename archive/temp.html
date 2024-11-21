@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Diabetes Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: Arial, sans-serif;
+        }
+        .card {
+            border-radius: 15px;
+        }
+        .chart-container {
+            position: relative;
+            height: 250px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container my-4">
+        <h1 class="text-center">Interactive Diabetes Dashboard</h1>
+        <p class="text-center text-muted">Click on a chart to filter data in others.</p>
+
+        <!-- Top Stats Cards -->
+        <div class="row g-3">
+            <div class="col-md-3">
+                <div class="card shadow">
+                    <div class="card-body">
+                        <p class="mb-2 text-muted">Total Users</p>
+                        <h3 id="total-users" class="mb-0">Loading...</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card shadow">
+                    <div class="card-body">
+                        <p class="mb-2 text-muted">Total Diabetics</p>
+                        <h3 id="total-diabetics" class="mb-0">Loading...</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card shadow">
+                    <div class="card-body">
+                        <p class="mb-2 text-muted">Avg. BMI</p>
+                        <h3 id="average-bmi" class="mb-0">Loading...</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card shadow">
+                    <div class="card-body">
+                        <p class="mb-2 text-muted">Avg. Sleep Duration</p>
+                        <h3 id="average-sleep" class="mb-0">Loading...</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Charts -->
+        <div class="row g-3 mt-4">
+            <div class="col-md-4">
+                <div class="card shadow">
+                    <div class="card-body">
+                        <h5>Diabetes by Gender</h5>
+                        <div class="chart-container">
+                            <canvas id="diabetesByGenderChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card shadow">
+                    <div class="card-body">
+                        <h5>BMI vs Age</h5>
+                        <div class="chart-container">
+                            <canvas id="bmiVsAgeChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card shadow">
+                    <div class="card-body">
+                        <h5>Sleep Duration</h5>
+                        <div class="chart-container">
+                            <canvas id="sleepDurationChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-3 mt-4">
+            <div class="col-md-6">
+                <div class="card shadow">
+                    <div class="card-body">
+                        <h5>Activity Levels</h5>
+                        <div class="chart-container">
+                            <canvas id="activityLevelChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card shadow">
+                    <div class="card-body">
+                        <h5>Social Media Usage</h5>
+                        <div class="chart-container">
+                            <canvas id="socialMediaUsageChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        fetch("cleaned_diabetes_data.csv")
+            .then(response => response.text())
+            .then(csvText => {
+                const rows = csvText.split("\n").slice(1).map(row => row.split(","));
+                const data = rows.map(row => {
+                    try {
+                        return {
+                            gender: row[1]?.trim() || "Unknown",
+                            age: +row[2],
+                            BMI: +row[6],
+                            sleep_duration: +row[11],
+                            diabetes: +row[15],
+                            activity_level: row[10]?.trim() || "Unknown",
+                            social_media_usage: row[12]?.trim() || "Unknown"
+                        };
+                    } catch {
+                        return null;
+                    }
+                }).filter(d => d && !isNaN(d.age) && !isNaN(d.BMI) && !isNaN(d.sleep_duration) && !isNaN(d.diabetes));
+
+                const updateDashboard = (filteredData) => {
+                    document.getElementById("total-users").textContent = filteredData.length;
+                    document.getElementById("total-diabetics").textContent = filteredData.filter(d => d.diabetes === 1).length;
+                    document.getElementById("average-bmi").textContent = (filteredData.reduce((sum, d) => sum + d.BMI, 0) / filteredData.length).toFixed(2);
+                    document.getElementById("average-sleep").textContent = (filteredData.reduce((sum, d) => sum + d.sleep_duration, 0) / filteredData.length).toFixed(2);
+                };
+
+                const charts = {};
+
+                const createChart = (type, ctx, dataConfig, clickHandler) => {
+                    const chart = new Chart(ctx, {
+                        type,
+                        data: dataConfig.data,
+                        options: {
+                            ...dataConfig.options,
+                            onClick: clickHandler
+                        }
+                    });
+                    return chart;
+                };
+
+                const filterAndUpdate = (filterFn) => {
+                    const filteredData = data.filter(filterFn);
+                    updateDashboard(filteredData);
+
+                    charts.bmiVsAge.data.datasets[0].data = filteredData.map(d => ({ x: d.age, y: d.BMI }));
+                    charts.sleepDuration.data.datasets[0].data = filteredData.map(d => d.sleep_duration);
+                    charts.activityLevel.data.datasets[0].data = d3.rollups(filteredData, v => v.length, d => d.activity_level).map(d => d[1]);
+                    charts.socialMediaUsage.data.datasets[0].data = d3.rollups(filteredData, v => v.length, d => d.social_media_usage).map(d => d[1]);
+
+                    Object.values(charts).forEach(chart => chart.update());
+                };
+
+                charts.diabetesByGender = createChart("bar", document.getElementById("diabetesByGenderChart").getContext("2d"), {
+                    data: {
+                        labels: [...new Set(data.map(d => d.gender))],
+                        datasets: [{
+                            label: "Diabetes Cases",
+                            data: d3.rollups(data.filter(d => d.diabetes === 1), v => v.length, d => d.gender).map(d => d[1]),
+                            backgroundColor: ["#00A9CE", "#005EB8", "#425563"]
+                        }]
+                    },
+                    options: { responsive: true, plugins: { legend: { display: false } } }
+                }, (e, elements) => {
+                    if (elements.length > 0) {
+                        const index = elements[0].index;
+                        const selectedGender = charts.diabetesByGender.data.labels[index];
+                        filterAndUpdate(d => d.gender === selectedGender);
+                    }
+                });
+
+                charts.bmiVsAge = createChart("scatter", document.getElementById("bmiVsAgeChart").getContext("2d"), {
+                    data: {
+                        datasets: [{
+                            label: "BMI vs Age",
+                            data: data.map(d => ({ x: d.age, y: d.BMI })),
+                            backgroundColor: "rgba(0, 94, 184, 0.7)"
+                        }]
+                    },
+                    options: { responsive: true, plugins: { legend: { display: false } } }
+                }, null);
+
+                charts.sleepDuration = createChart("bar", document.getElementById("sleepDurationChart").getContext("2d"), {
+                    data: {
+                        labels: Array.from({ length: 6 }, (_, i) => `${i * 2}-${(i + 1) * 2} hrs`),
+                        datasets: [{
+                            label: "Sleep Duration",
+                            data: Array(6).fill(0)
+                        }]
+                    },
+                    options: { responsive: true }
+                }, null);
+
+                charts.activityLevel = createChart("doughnut", document.getElementById("activityLevelChart").getContext("2d"), {
+                    data: {
+                        labels: [...new Set(data.map(d => d.activity_level))],
+                        datasets: [{
+                            label: "Activity Levels",
+                            data: []
+                        }]
+                    },
+                    options: { responsive: true }
+                }, null);
+
+                charts.socialMediaUsage = createChart("doughnut", document.getElementById("socialMediaUsageChart").getContext("2d"), {
+                    data: {
+                        labels: [...new Set(data.map(d => d.social_media_usage))],
+                        datasets: [{
+                            label: "Social Media Usage",
+                            data: []
+                        }]
+                    },
+                    options: { responsive: true }
+                }, null);
+            })
+            .catch(error => console.error("Error fetching or parsing the CSV file:", error));
+    </script>
+</body>
+</html>
