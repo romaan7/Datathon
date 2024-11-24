@@ -24,14 +24,14 @@
 
         .chart-container {
             position: relative;
-            height: 250px;
-
+            display: flex;
+            justify-content: center;
 
         }
 
         .icon-right {
-            font-size: 30px;
-            color: #005EB8;
+            font-size: 45px;
+            color: #289acc;
         }
 
         .mt-4 {
@@ -59,6 +59,7 @@
             uncovering trends and factors influencing diabetes to support better awareness and prevention.</p>
 
         <!-- Top Stats Cards -->
+        <!-- Row 1 Donut Charts -->
         <div class="row g-3">
             <div class="col-md-3">
                 <div class="card">
@@ -114,7 +115,7 @@
             </div>
         </div>
 
-        <!-- Main Charts -->
+        <!-- Row 2 Donut Charts -->
         <div class="row g-3 mt-4">
             <!-- Diabetes by Gender -->
             <div class="col-md-4">
@@ -153,7 +154,7 @@
             </div>
         </div>
 
-        <!-- New Donut Charts -->
+        <!-- Row 3 Donut Charts -->
         <div class="row g-3 mt-4">
             <!-- Activity Levels -->
             <div class="col-md-6">
@@ -181,7 +182,7 @@
         </div>
 
 
-        <!-- New Visualizations -->
+        <!-- Row 4 Donut Charts -->
         <div class="row g-3 mt-4">
             <!-- Family History -->
             <div class="col-md-4">
@@ -213,6 +214,33 @@
                         <h5>Alcohol Consumption and Diabetes</h5>
                         <div class="chart-container">
                             <canvas id="alcoholConsumptionChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Row 5 Donut Charts -->
+        <div class="row g-3 mt-4">
+            <!-- Activity Levels -->
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h5>Sleep Duration with Diabetic</h5>
+                        <div class="chart-container">
+                            <canvas id="sleepDurationChart2"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Social Media Usage -->
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h5>BMI vs Diabetes Pedigree Function</h5>
+                        <div class="chart-container">
+                            <canvas id="bmiVsPedigreeChart"></canvas>
                         </div>
                     </div>
                 </div>
@@ -266,24 +294,57 @@
                             label: "Diabetes Cases",
                             data: genderData.map(d => d[1]),
                             backgroundColor: ["#00A9CE", "#005EB8", "#425563"],
-                            borderRadius: 10, // Add rounded corners
+                            borderRadius: 5, // Add rounded corners
                             borderSkipped: false // Ensures rounded corners apply to all edges
                         }]
                     },
                     options: { responsive: true, plugins: { legend: { display: false } } }
                 });
 
-                // BMI vs Age
+                // BMI vs Age with Diabetic and Non-Diabetic Indicator
                 new Chart(document.getElementById("bmiVsAgeChart").getContext("2d"), {
                     type: "scatter",
                     data: {
-                        datasets: [{
-                            label: "BMI vs Age",
-                            data: data.map(d => ({ x: d.age, y: d.BMI })),
-                            backgroundColor: "rgba(0, 94, 184, 0.7)"
-                        }]
+                        datasets: [
+                            {
+                                label: "Non-Diabetic",
+                                data: data.filter(d => d.diabetes === 0).map(d => ({ x: d.age, y: d.BMI })),
+                                backgroundColor: "#005EB8", // Blue for non-diabetic
+                                borderColor: "#005EB8",
+                                pointRadius: 1
+                            },
+                            {
+                                label: "Diabetic",
+                                data: data.filter(d => d.diabetes === 1).map(d => ({ x: d.age, y: d.BMI })),
+                                backgroundColor: "#00A9CE", // Red for diabetic
+                                borderColor: "#00A9CE",
+                                pointRadius: 1
+                            }
+                        ]
                     },
-                    options: { responsive: true, plugins: { legend: { display: false } } }
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                display: true,
+                                position: "top" // Position the legend at the top
+                            }
+                        },
+                        scales: {
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: "Age"
+                                }
+                            },
+                            y: {
+                                title: {
+                                    display: true,
+                                    text: "BMI"
+                                }
+                            }
+                        }
+                    }
                 });
 
                 // Sleep Duration
@@ -300,7 +361,7 @@
                             label: "Frequency",
                             data: sleepBins,
                             backgroundColor: "#005EB8",
-                            borderRadius: 10, // Add rounded corners
+                            borderRadius: 5, // Add rounded corners
                             borderSkipped: false // Ensures rounded corners apply to all edges
                         }]
                     },
@@ -398,34 +459,94 @@
                     }, plugins: [ChartDataLabels] // Activate the Datalabels plugin
                 });
 
-                // Diet Type Heatmap
-                const dietHeatmapData = d3.rollups(
+                // Diet Type Analysis: Grouped Bar Chart for Diabetic and Non-Diabetic Individuals
+                const dietTypeCounts = d3.rollups(
                     data,
-                    v => v.length,
-                    d => `${d.diet_type}_${d.diabetes}`
+                    v => v.length, // Count the number of entries
+                    d => `${d.diet_type}_${d.diabetes}` // Group by diet type and diabetes status
                 );
-                const heatmapLabels = Array.from(new Set(data.map(d => d.diet_type)));
-                const heatmapDataset = {
-                    labels: heatmapLabels,
+
+                // Extract unique diet types for the x-axis labels
+                const uniqueDietTypes = Array.from(new Set(data.map(d => d.diet_type)));
+
+                // Prepare datasets for diabetic and non-diabetic groups
+                const nonDiabeticData = uniqueDietTypes.map(dietType =>
+                    dietTypeCounts.find(d => d[0] === `${dietType}_0`)?.[1] || 0
+                );
+                const diabeticData = uniqueDietTypes.map(dietType =>
+                    dietTypeCounts.find(d => d[0] === `${dietType}_1`)?.[1] || 0
+                );
+
+                // Build the chart dataset
+                const dietTypeChartData = {
+                    labels: uniqueDietTypes, // X-axis: Diet types
                     datasets: [
                         {
                             label: "Non-Diabetic",
-                            data: heatmapLabels.map(label => dietHeatmapData.find(d => d[0] === `${label}_0`)?.[1] || 0),
-                            backgroundColor: "#005EB8",
-
+                            data: nonDiabeticData,
+                            backgroundColor: "#005EB8", // Distinct color for non-diabetic
+                            borderColor: "#005EB8",
+                            borderWidth: 1,
+                            stack: "diabetesStatus" // Stack grouping
                         },
                         {
                             label: "Diabetic",
-                            data: heatmapLabels.map(label => dietHeatmapData.find(d => d[0] === `${label}_1`)?.[1] || 0),
-                            backgroundColor: "#41B6E6"
+                            data: diabeticData,
+                            backgroundColor: "#00A9CE", // Distinct color for diabetic
+                            borderColor: "#00A9CE",
+                            borderWidth: 1,
+                            stack: "diabetesStatus" // Stack grouping
                         }
                     ]
                 };
+
+                // Create the chart
                 new Chart(document.getElementById("dietTypeHeatmap").getContext("2d"), {
                     type: "bar",
-                    data: heatmapDataset,
-                    options: { responsive: true, plugins: { legend: { display: true } } }
+                    data: dietTypeChartData,
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                display: true,
+                                position: "top", // Position the legend at the top
+                                labels: {
+                                    boxWidth: 15, // Adjust legend box size
+                                    padding: 10 // Add spacing between legend items
+                                }
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function (context) {
+                                        const group = context.dataset.label;
+                                        const value = context.raw;
+                                        return `${group}: ${value}`;
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: "Diet Type"
+                                },
+                                ticks: {
+                                    maxRotation: 45, // Rotate labels for better readability
+                                    minRotation: 0
+                                }
+                            },
+                            y: {
+                                title: {
+                                    display: true,
+                                    text: "Count of Individuals"
+                                },
+                                stacked: true // Enable stacked view for better comparison
+                            }
+                        }
+                    }
                 });
+
 
                 // Alcohol Consumption Stacked Bar
                 const alcoholData = d3.rollups(
@@ -442,14 +563,14 @@
                             data: alcoholLabels.map(label => alcoholData.find(d => d[0] === `${label}_0`)?.[1] || 0),
                             backgroundColor: "#005EB8",
 
-                            borderRadius: 10, // Add rounded corners
+                            borderRadius: 5, // Add rounded corners
                             borderSkipped: false, // Ensures rounded corners apply to all edges
                         },
                         {
                             label: "Diabetic",
                             data: alcoholLabels.map(label => alcoholData.find(d => d[0] === `${label}_1`)?.[1] || 0),
-                            backgroundColor: "#41B6E6",
-                            borderRadius: 10, // Add rounded corners
+                            backgroundColor: "#00A9CE",
+                            borderRadius: 5, // Add rounded corners
                             borderSkipped: false, // Ensures rounded corners apply to all edges
                         }
                     ]
@@ -459,6 +580,68 @@
                     data: alcoholDataset,
                     options: { responsive: true, plugins: { legend: { display: true } } }
                 });
+
+                // Sleep Duration with Diabetic and Non-Diabetic Indicator as Stacked Bar Chart
+                const diabeticSleepBins = Array(10).fill(0);
+                const nonDiabeticSleepBins = Array(10).fill(0);
+
+                data.forEach(d => {
+                    const bin = Math.min(Math.floor(d.sleep_duration / 2), 9);
+                    if (d.diabetes === 1) {
+                        diabeticSleepBins[bin]++;
+                    } else {
+                        nonDiabeticSleepBins[bin]++;
+                    }
+                });
+
+                //Sleep Duration diabetic vs non diabetic
+                new Chart(document.getElementById("sleepDurationChart2").getContext("2d"), {
+                    type: "bar",
+                    data: {
+                        labels: Array.from({ length: 10 }, (_, i) => `${i * 2}-${(i + 1) * 2} hrs`),
+                        datasets: [
+                            {
+                                label: "Non-Diabetic",
+                                data: nonDiabeticSleepBins,
+                                backgroundColor: "#005EB8", // Blue for non-diabetic
+                                borderRadius: 5 // Rounded corners for aesthetics
+                            },
+                            {
+                                label: "Diabetic",
+                                data: diabeticSleepBins,
+                                backgroundColor: "#00A9CE", // Red for diabetic
+                                borderRadius: 5 // Rounded corners for aesthetics
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                display: true,
+                                position: "top" // Position the legend at the top
+                            }
+                        },
+                        scales: {
+                            x: {
+                                stacked: true, // Enable stacked bars on the x-axis
+                                title: {
+                                    display: true,
+                                    text: "Sleep Duration (hours)"
+                                }
+                            },
+                            y: {
+                                stacked: true, // Enable stacked bars on the y-axis
+                                title: {
+                                    display: true,
+                                    text: "Frequency"
+                                }
+                            }
+                        }
+                    }
+                });
+
+
 
                 // Family History Chart
                 const familyData = d3.rollups(
@@ -474,14 +657,14 @@
                             label: "Non-Diabetic",
                             data: familyLabels.map(label => familyData.find(d => d[0] === `${label}_0`)?.[1] || 0),
                             backgroundColor: "#005EB8",
-                            borderRadius: 10, // Add rounded corners
+                            borderRadius: 5, // Add rounded corners
                             borderSkipped: false, // Ensures rounded corners apply to all edges
                         },
                         {
                             label: "Diabetic",
                             data: familyLabels.map(label => familyData.find(d => d[0] === `${label}_1`)?.[1] || 0),
-                            backgroundColor: "#41B6E6",
-                            borderRadius: 10, // Add rounded corners
+                            backgroundColor: "#00A9CE",
+                            borderRadius: 5, // Add rounded corners
                             borderSkipped: false, // Ensures rounded corners apply to all edges
                         }
                     ]
@@ -495,6 +678,65 @@
 
             })
             .catch(error => console.error("Error fetching or parsing the CSV file:", error));
+
+        fetch("cleaned_diabetes_data.csv")
+            .then(response => response.text())
+            .then(csvText => {
+                const rows = csvText.split("\n").slice(1).map(row => row.split(","));
+
+                // Process data for BMI and Diabetes Pedigree Function
+                const bmiVsPedigreeData = rows.map(row => ({
+                    x: +row[6], // BMI
+                    y: +row[13] // Diabetes Pedigree Function
+                })).filter(d => !isNaN(d.x) && !isNaN(d.y));
+
+                // Create the scatter plot
+                new Chart(document.getElementById("bmiVsPedigreeChart").getContext("2d"), {
+                    type: "scatter",
+                    data: {
+                        datasets: [{
+                            label: "BMI vs Diabetes Pedigree",
+                            data: bmiVsPedigreeData,
+                            backgroundColor: "rgba(0, 94, 184, 0.7)",
+                            borderColor: "#005EB8",
+                            pointRadius: 2
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                display: false
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function (context) {
+                                        return `BMI: ${context.raw.x}, Pedigree: ${context.raw.y}`;
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                type: "linear",
+                                position: "bottom",
+                                title: {
+                                    display: true,
+                                    text: "BMI"
+                                }
+                            },
+                            y: {
+                                title: {
+                                    display: true,
+                                    text: "Diabetes Pedigree Function"
+                                }
+                            }
+                        }
+                    }
+                });
+            })
+            .catch(error => console.error("Error fetching or parsing the CSV file:", error));
+
     </script>
 </body>
 
